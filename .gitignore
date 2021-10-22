@@ -27,3 +27,4 @@ lookupTable.txt
 *.csv
 *.png
 bin/.DS_Store
+*.aln

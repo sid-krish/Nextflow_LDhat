@@ -11,27 +11,27 @@ lk_table = sys.argv[4]
 child = pexpect.spawn(f"pairwise -seq {sites_file} -loc {locs_file} -lk {lk_table} -prefix pairwise_", encoding='utf-8',
                       logfile=sys.stdout)
 
-child.expect_exact("Input average tract length for conversion model: ")
+child.expect_exact("Input average tract length for conversion model: ", timeout=None)
 child.sendline(recom_tract_len)
 
 # plain expect allows use of regexp which is needed here
-child.expect("Do you wish to change grid over which to estimate likelihoods for *")
+child.expect("Do you wish to change grid over which to estimate likelihoods for *", timeout=None)
 child.sendline("0")
 
-child.expect_exact("Do you wish to carry out a sliding windows analysis? (yes=1/no=0):")
+child.expect_exact("Do you wish to carry out a sliding windows analysis? (yes=1/no=0):", timeout=None)
 child.sendline("0")
 
-child.expect_exact("(0=No, 1=Total only, 2=Full table):")
+child.expect_exact("(0=No, 1=Total only, 2=Full table):", timeout=None)
 child.sendline("0")
 
-child.expect_exact("Estimate 4Ner by moment method? (yes=1, no=0)")
+child.expect_exact("Estimate 4Ner by moment method? (yes=1, no=0)", timeout=None)
 child.sendline("0")
 
-child.expect_exact("Do you wish to test for recombination? (yes=1, no=0):")
+child.expect_exact("Do you wish to test for recombination? (yes=1, no=0):", timeout=None)
 child.sendline("0")
 
 child.expect_exact(
-    "Do you wish to test constant-rate model and estimate sampling distribution by simulation? (yes=1/no=0):")
+    "Do you wish to test constant-rate model and estimate sampling distribution by simulation? (yes=1/no=0):", timeout=None)
 child.sendline("0")
 
 # from docs: You can also just expect the EOF if you are waiting for all output of a child to finish.
