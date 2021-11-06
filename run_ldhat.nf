@@ -22,7 +22,7 @@ process LDHAT_REFORMAT_FASTA{
 
 
 process LOOKUP_TABLE_LDPOP {
-//     publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
         tuple val(mutation_rate),
@@ -40,6 +40,29 @@ process LOOKUP_TABLE_LDPOP {
     // also they mention twice muation and recom rate, for the mutation and recom parameters which I am unsure how to interpret
     """
     ldtable.py --cores 4 -n ${sample_size} -th ${mutation_rate} -rh ${params.ldpop_rho_range} --approx > lookupTable.txt
+    """
+}
+
+
+process DOWNSAMPLED_LOOKUP_TABLE {
+    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+
+    input:
+        tuple val(mutation_rate),
+            val(sample_size),
+            path("LDhat_reformated.fa")
+        
+        path downsampled_lookup_tables
+
+    output:
+        tuple val(mutation_rate),
+            val(sample_size),
+            path("LDhat_reformated.fa"),
+            path("lookupTable.txt")
+
+    script:
+    """
+    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.ldpop_rho_range}
     """
 }
 
@@ -174,6 +197,7 @@ workflow {
     params.ldpop_rho_range = "101,100"
 
     params.input_fasta = 'none'
+    params.lookup_tables = "Lookup_tables"
 
     // Input verification
     if (params.input_fasta == 'none') {
@@ -183,14 +207,17 @@ workflow {
 
     // Channels
     input_fasta_channel = Channel.fromPath( params.input_fasta )
+    downsampled_lookup_tables = Channel.fromPath( "${params.lookup_tables}/lk_downsampled_*.csv" ).collect()
 
     // For each process there is a output of tuple with the params that change + necessary files/values  to move forward until they are no longer need
 
     LDHAT_REFORMAT_FASTA(input_fasta_channel, params.mutation_rate)
 
-    LOOKUP_TABLE_LDPOP(LDHAT_REFORMAT_FASTA.out)
+    // LOOKUP_TABLE_LDPOP(LDHAT_REFORMAT_FASTA.out)
 
-    LDHAT_CONVERT(LOOKUP_TABLE_LDPOP.out)
+    DOWNSAMPLED_LOOKUP_TABLE(LDHAT_REFORMAT_FASTA.out, downsampled_lookup_tables)
+
+    LDHAT_CONVERT(DOWNSAMPLED_LOOKUP_TABLE.out)
 
     SWITCH_TO_GENE_CONVERSION_MODE(LDHAT_CONVERT.out)
 
