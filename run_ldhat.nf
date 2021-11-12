@@ -7,11 +7,9 @@ process LDHAT_REFORMAT_FASTA{
 
     input:
         path fasta
-        val mutation_rate
 
     output:
-        tuple val(mutation_rate),
-            stdout,
+        tuple stdout,
             path("LDhat_reformated.fa")
 
     script:
@@ -21,65 +19,15 @@ process LDHAT_REFORMAT_FASTA{
 }
 
 
-process LOOKUP_TABLE_LDPOP {
-    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
-
-    input:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("LDhat_reformated.fa")
-
-    output:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("LDhat_reformated.fa"),
-            path("lookupTable.txt")
-
-    script:
-    // There are other parameters that can be adjusted, I've left them out for the time being
-    // also they mention twice muation and recom rate, for the mutation and recom parameters which I am unsure how to interpret
-    """
-    ldtable.py --cores 4 -n ${sample_size} -th ${mutation_rate} -rh ${params.ldpop_rho_range} --approx > lookupTable.txt
-    """
-}
-
-
-process DOWNSAMPLED_LOOKUP_TABLE {
-    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
-
-    input:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("LDhat_reformated.fa")
-        
-        path downsampled_lookup_tables
-
-    output:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("LDhat_reformated.fa"),
-            path("lookupTable.txt")
-
-    script:
-    """
-    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.ldpop_rho_range}
-    """
-}
-
-
 process LDHAT_CONVERT{
 //     publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("LDhat_reformated.fa"),
-            path("lookupTable.txt")
+        tuple val(sample_size),
+            path("LDhat_reformated.fa")
 
     output:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("lookupTable.txt"),
+        tuple val(sample_size),
             path("locs.txt"),
             path("sites.txt")
 
@@ -96,20 +44,16 @@ process LDHAT_CONVERT{
 }
 
 
-process SWITCH_TO_GENE_CONVERSION_MODE{
-    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+process SWITCH_TO_GENE_CONVERSION_MODE {
+    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("lookupTable.txt"),
+        tuple val(sample_size),
             path("locs.txt"),
             path("sites.txt")
 
     output:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("lookupTable.txt"),
+        tuple val(sample_size),
             path("sites.txt"),
             path("locs_C.txt")
 
@@ -120,20 +64,93 @@ process SWITCH_TO_GENE_CONVERSION_MODE{
 
 }
 
-process LDHAT_PAIRWISE{
-    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+process WATTERSON_ESTIMATE {
+    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
-        tuple val(mutation_rate),
-            val(sample_size),
-            path("lookupTable.txt"),
+        tuple val(sample_size),
             path("sites.txt"),
             path("locs_C.txt")
 
     output:
-        tuple val(mutation_rate),
+        tuple stdout,
             val(sample_size),
-            path("pairwise_freqs.txt"),
+            path("sites.txt"),
+            path("locs_C.txt")
+
+    script:
+    """
+    snps=\$(head -1 locs_C.txt | awk '{split(\$0,a," "); print a[1]}')
+    genome_len=\$(head -1 locs_C.txt | awk '{split(\$0,a," "); print a[2]}' | awk '{split(\$0,a,"."); print a[1]}')
+    watterson_estimate.py \$snps \$genome_len ${sample_size}
+    """
+}
+
+
+process LOOKUP_TABLE_LDPOP {
+    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+
+    input:
+        tuple val(theta_est),
+            val(sample_size),
+            path("sites.txt"),
+            path("locs_C.txt")
+
+    output:
+        tuple val(theta_est),
+            val(sample_size),
+            path("sites.txt"),
+            path("locs_C.txt"),
+            path("lookupTable.txt")
+
+    script:
+    // There are other parameters that can be adjusted, I've left them out for the time being
+    // also they mention twice muation and recom rate, for the mutation and recom parameters which I am unsure how to interpret
+    """
+    ldtable.py --cores $task.cpus -n ${sample_size} -th ${theta_est} -rh ${params.ldpop_rho_range} --approx > lookupTable.txt
+    """
+}
+
+
+process DOWNSAMPLED_LOOKUP_TABLE {
+    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+
+    input:
+        tuple val(theta_est),
+            val(sample_size),
+            path("sites.txt"),
+            path("locs_C.txt")
+        
+        val mutation_rate
+        path downsampled_lookup_tables
+        
+
+    output:
+        tuple val(theta_est),
+            val(sample_size),
+            path("sites.txt"),
+            path("locs_C.txt"),
+            path("lookupTable.txt")
+
+    script:
+    """
+    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.ldpop_rho_range}
+    """
+}
+
+
+process LDHAT_PAIRWISE{
+    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+
+    input:
+        tuple val(theta_est),
+            val(sample_size),
+            path("sites.txt"),
+            path("locs_C.txt"),
+            path("lookupTable.txt")
+
+    output:
+        tuple path("pairwise_freqs.txt"),
             path("pairwise_outfile.txt"),
             path("pairwise_stdOut.txt")
 
@@ -141,6 +158,7 @@ process LDHAT_PAIRWISE{
         // uses pexpect to handle unavoidable prompts
         """
         run_pairwise_with_pexpect.py ${params.recom_tract_len} sites.txt locs_C.txt lookupTable.txt > pairwise_stdOut.txt
+        echo ${theta_est} > theta_est.txt
         """
 
 }
@@ -192,7 +210,7 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    params.mutation_rate = 0.01
+    // params.mutation_rate = 0.01
     params.recom_tract_len = 500
     params.ldpop_rho_range = "101,100"
 
@@ -211,17 +229,19 @@ workflow {
 
     // For each process there is a output of tuple with the params that change + necessary files/values  to move forward until they are no longer need
 
-    LDHAT_REFORMAT_FASTA(input_fasta_channel, params.mutation_rate)
+    LDHAT_REFORMAT_FASTA(input_fasta_channel)
 
-    // LOOKUP_TABLE_LDPOP(LDHAT_REFORMAT_FASTA.out)
-
-    DOWNSAMPLED_LOOKUP_TABLE(LDHAT_REFORMAT_FASTA.out, downsampled_lookup_tables)
-
-    LDHAT_CONVERT(DOWNSAMPLED_LOOKUP_TABLE.out)
+    LDHAT_CONVERT(LDHAT_REFORMAT_FASTA.out)
 
     SWITCH_TO_GENE_CONVERSION_MODE(LDHAT_CONVERT.out)
 
-    LDHAT_PAIRWISE(SWITCH_TO_GENE_CONVERSION_MODE.out)
+    WATTERSON_ESTIMATE(SWITCH_TO_GENE_CONVERSION_MODE.out)
+
+    LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
+
+    // DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, downsampled_lookup_tables)
+
+    LDHAT_PAIRWISE(LOOKUP_TABLE_LDPOP.out)
 
     // PAIRWISE_PROCESS_OUTPUT(LDHAT_PAIRWISE.out)
 
