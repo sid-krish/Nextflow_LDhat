@@ -27,7 +27,9 @@ process PREPEND_FILENAME {
 
 
 process FREEBAYES {
-    publishDir "Bam_to_msa_Output", mode: "copy", saveAs: {filename -> "${prepend_filename}${filename}"}
+    // publishDir "Bam_to_msa_Output", mode: "copy", saveAs: {filename -> "${prepend_filename}${filename}"}
+
+    maxForks 1
 
     input:
         tuple val(prepend_filename),
@@ -51,37 +53,45 @@ process FREEBAYES {
 
 
 process VCF_TO_FASTA {
+    publishDir "Bam_to_msa_Output", mode: "copy", saveAs: {filename -> "${prepend_filename}${filename}"}
+
+    maxForks 1
+
     input:
+        tuple val(prepend_filename),
+            path(vcf),
+            path(fasta)
 
     output:
+        tuple val(prepend_filename),
+            path(vcf),
+            path(fasta),
+            path("to_change_*.fa")
 
     script:
     """
-
+    vcf2fasta -f ${fasta} -P 1 -p to_change_ ${vcf}
     """
 }
 
 
 process UPDATE_HEADER {
+    publishDir "Bam_to_msa_Output", mode: "copy", saveAs: {filename -> "${prepend_filename}${filename}"}
+
+    maxForks 1
+    
     input:
+        tuple val(prepend_filename),
+            path(vcf),
+            path(fasta),
+            path(converted_fa)
 
     output:
+        path("to_merge_${prepend_filename}.fa")
 
     script:
     """
-
-    """
-}
-
-
-process MERGE_FASTAS {
-    input:
-
-    output:
-
-    script:
-    """
-
+    rename_fasta.py ${converted_fa} ${prepend_filename}
     """
 }
 
@@ -98,10 +108,14 @@ workflow {
 
     bam_and_fa = bam_file_channel.combine(reference_genome_channel)
     
-
     // Process execution
     PREPEND_FILENAME(bam_and_fa, params.prepend_filename)
 
     FREEBAYES(PREPEND_FILENAME.out)
+
+    VCF_TO_FASTA(FREEBAYES.out)
+
+    // only the new fastas are merged not the reference sequence
+    UPDATE_HEADER(VCF_TO_FASTA.out) | collectFile(name:"merged.fasta", storeDir:"Bam_to_msa_Output")
 
 }
