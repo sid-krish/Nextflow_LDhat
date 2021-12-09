@@ -3,7 +3,7 @@ nextflow.enable.dsl = 2
 
 
 process LDHAT_REFORMAT_FASTA{
-    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
         path fasta
@@ -88,7 +88,7 @@ process WATTERSON_ESTIMATE {
 
 
 process LOOKUP_TABLE_LDPOP {
-    // publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
+    publishDir "Output", mode: "copy", saveAs: {filename -> "${fn_modifier}_${filename}"}
 
     input:
         tuple val(theta_est),

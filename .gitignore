@@ -15,16 +15,23 @@ Output/
 
 Output*/
 
+*Output/
+
 SimulationResults*/
 
 .nextflow.log
 .nextflow.log.*
 
 ReferenceOutput/
+
 trees.txt
+
 lookupTable.txt
-.Rproj.user
+
 *.csv
+
 *.png
+
 bin/.DS_Store
+
 *.aln
