@@ -47,7 +47,8 @@ process FREEBAYES {
     samtools sort --threads $task.cpus ${bam} -o Aligned.csorted.bam
     samtools index -@ $task.cpus Aligned.csorted.bam
 
-    freebayes -f ${fasta} -p 1 Aligned.csorted.bam > freeBayesOut.vcf
+    # only keep SNP type entries
+    freebayes -f ${fasta} -p 1 Aligned.csorted.bam | grep -e '^#' -e 'TYPE=snp' > freeBayesOut.vcf
     """
 }
 
