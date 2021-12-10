@@ -210,8 +210,8 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    // params.mutation_rate = 0.01
-    params.recom_tract_len = 500
+    params.mutation_rate = 0.01
+    params.recom_tract_len = 2300
     params.ldpop_rho_range = "101,100"
 
     params.input_fasta = 'none'
@@ -237,11 +237,11 @@ workflow {
 
     WATTERSON_ESTIMATE(SWITCH_TO_GENE_CONVERSION_MODE.out)
 
-    LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
+    // LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
 
-    // DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, downsampled_lookup_tables)
+    DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, params.mutation_rate, downsampled_lookup_tables)
 
-    LDHAT_PAIRWISE(LOOKUP_TABLE_LDPOP.out)
+    LDHAT_PAIRWISE(DOWNSAMPLED_LOOKUP_TABLE.out)
 
     // PAIRWISE_PROCESS_OUTPUT(LDHAT_PAIRWISE.out)
 
