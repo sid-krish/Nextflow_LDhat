@@ -35,3 +35,5 @@ lookupTable.txt
 bin/.DS_Store
 
 *.aln
+*.fasta
+*.html

@@ -152,13 +152,14 @@ process LDHAT_PAIRWISE{
     output:
         tuple path("pairwise_freqs.txt"),
             path("pairwise_outfile.txt"),
-            path("pairwise_stdOut.txt")
+            path("pairwise_stdOut.txt"),
+            path("watterson_est.txt")
 
     script:
         // uses pexpect to handle unavoidable prompts
         """
         run_pairwise_with_pexpect.py ${params.recom_tract_len} sites.txt locs_C.txt lookupTable.txt > pairwise_stdOut.txt
-        echo ${theta_est} > theta_est.txt
+        echo ${theta_est} > watterson_est.txt
         """
 
 }
