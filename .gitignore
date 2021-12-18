@@ -37,3 +37,6 @@ bin/.DS_Store
 *.aln
 *.fasta
 *.html
+*.fna
+*.gz
+*.tar
