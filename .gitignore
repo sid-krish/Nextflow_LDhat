@@ -1,6 +1,3 @@
-
-*.001
-
 .nextflow/
 
 work/
@@ -40,3 +37,5 @@ bin/.DS_Store
 *.fna
 *.gz
 *.tar
+
+Misc/
