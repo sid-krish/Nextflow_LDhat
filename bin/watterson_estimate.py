@@ -5,7 +5,7 @@ import sys
 
 
 def watterson_estimate(segregating_sites, genome_len, samples):
-    # Theta is at population level
+    # Theta per site
     k = 1
     calc_sum = 0
     while k < samples:
