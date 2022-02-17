@@ -5,7 +5,7 @@ RUN apt-get dist-upgrade --yes
 RUN apt-get install build-essential procps --yes
 
 RUN conda update conda
-RUN conda install -c defaults -c bioconda -c conda-forge pandas numpy seaborn python scipy future biopython pexpect fastsimbac seq-gen --yes
+RUN conda install -c defaults -c bioconda -c conda-forge pandas numpy seaborn python scipy future biopython pexpect fastsimbac seq-gen msprime>=1.1.0 --yes
 RUN conda clean --all --yes
 
 COPY art_illumina /usr/local/bin/
