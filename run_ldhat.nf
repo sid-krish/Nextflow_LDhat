@@ -54,7 +54,8 @@ process LDHAT_CONVERT{
         tuple val(prefix_filename),
             val(sample_size),
             path("locs.txt"),
-            path("sites.txt")
+            path("sites.txt"),
+            path("LDhat_reformated.fa")
 
     script:
         // -2only: Specifies that only polymorphic sites with exactly two alleles
@@ -76,13 +77,15 @@ process SWITCH_TO_GENE_CONVERSION_MODE {
         tuple val(prefix_filename),
             val(sample_size),
             path("locs.txt"),
-            path("sites.txt")
+            path("sites.txt"),
+            path("LDhat_reformated.fa")
 
     output:
         tuple val(prefix_filename),
             val(sample_size),
             path("sites.txt"),
-            path("locs_C.txt")
+            path("locs_C.txt"),
+            path("LDhat_reformated.fa")
 
     script:
         """
@@ -98,7 +101,8 @@ process WATTERSON_ESTIMATE {
         tuple val(prefix_filename),
             val(sample_size),
             path("sites.txt"),
-            path("locs_C.txt")
+            path("locs_C.txt"),
+            path("LDhat_reformated.fa")
 
     output:
         tuple val(prefix_filename),
@@ -109,9 +113,10 @@ process WATTERSON_ESTIMATE {
 
     script:
     """
-    snps=\$(head -1 locs_C.txt | awk '{split(\$0,a," "); print a[1]}')
+    fasta_variant_sites.py LDhat_reformated.fa
+    snps=\$(wc -l variants_in_fasta.csv | awk '{split(\$0,a," "); print a[1]}')
     genome_len=\$(head -1 locs_C.txt | awk '{split(\$0,a," "); print a[2]}' | awk '{split(\$0,a,"."); print a[1]}')
-    watterson_estimate.py \$snps \$genome_len ${sample_size}
+    original_watterson.py \$genome_len \$snps ${sample_size}
     """
 }
 
@@ -221,7 +226,7 @@ process PAIRWISE_PROCESS_OUTPUT{
 }
 
 process PLOT_RESULTS{
-    publishDir "Output/Results", mode: "copy"
+    publishDir "LDhat_Output/Results", mode: "copy"
 
     input:
         path collectedFile
@@ -242,15 +247,15 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    params.mutation_rate = 0.01
+    params.mutation_rate = 0.01 // scaled theta
     params.recom_tract_len = 1000
     params.ldpop_rho_range = "101,100"
 
     params.prefix_filename = 'none'
     params.input_fasta = 'none'
     // params.lookup_tables = "Lookup_tables"
-    params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
-    // params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-1"
+    // params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
+    params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-100"
 
     // Input verification
     if (params.input_fasta == 'none') {
