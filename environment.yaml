@@ -14,3 +14,4 @@ dependencies:
   - future
   - fastsimbac 
   - seq-gen
+  - msprime>=1.1.0

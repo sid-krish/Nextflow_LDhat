@@ -244,12 +244,12 @@ workflow {
 
     params.mutation_rate = 0.01
     params.recom_tract_len = 1000
-    params.ldpop_rho_range = "101,1"
+    params.ldpop_rho_range = "101,100"
 
     params.prefix_filename = 'none'
     params.input_fasta = 'none'
     // params.lookup_tables = "Lookup_tables"
-    params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-1"
+    params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
     // params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-1"
 
     // Input verification
