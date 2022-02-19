@@ -248,7 +248,7 @@ workflow {
     // A process component can be invoked only once in the same workflow context
 
     params.mutation_rate = 0.01 // scaled theta
-    params.recom_tract_len = 1000
+    params.recom_tract_len = 500
     params.ldpop_rho_range = "101,100"
 
     params.prefix_filename = 'none'
