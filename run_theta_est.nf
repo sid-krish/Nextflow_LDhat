@@ -106,6 +106,8 @@ process WATTERSON_ESTIMATE {
 
     output:
             path("theta_est.csv")
+            path("variants_in_fasta.csv")
+
 
     script:
     """
