@@ -59,13 +59,13 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    params.rho_rates = [0.005, 0.0125, 0.025, 0.0375, 0.05] // unscaled r values. rho = 2 . p . N_e . r . tractlen
-    params.theta_rates = [0.005] // unscaled u values. theta = 2 . p . N_e . u
-    params.genome_sizes = [25000]
+    params.rho_rates = [0.0] // unscaled r values. rho = 2 . p . N_e . r . tractlen
+    params.theta_rates = [0.05, 0.15, 0.25, 0.35] // unscaled u values. theta = 2 . p . N_e . u
+    params.genome_sizes = [100000]
     params.sample_sizes  = [5,10,20,30,40,50,60,70,80,90,100]
     params.seeds = [1,2,3,4,5,6,7,8,9,10]
     
-    params.recom_tract_len = 500
+    params.recom_tract_len = 1000
     // params.effective_pop_size = 1
 
     rho_rates = Channel.from(params.rho_rates)

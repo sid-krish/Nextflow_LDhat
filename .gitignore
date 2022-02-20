@@ -39,3 +39,5 @@ bin/.DS_Store
 *.tar
 
 Misc/
+
+LDhat_Output_rho_sweep/
