@@ -41,3 +41,5 @@ bin/.DS_Store
 Misc/
 
 LDhat_Output_rho_sweep/
+
+LDhat_Output_var_genome/

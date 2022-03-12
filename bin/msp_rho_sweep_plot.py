@@ -15,7 +15,7 @@ def collect_results_sweep_1(rho, theta, genome_size, sample_size, seed):
     sweep_1_combinations = mesh_grid.T.reshape(-1, 5)
 
     # Load data into dataframe
-    recom_est_results_dir = f"{os.getcwd()}/LDhat_Output/"
+    recom_est_results_dir = f"{os.getcwd()}/LDhat_Output_rho_sweep/"
 
     col_names = ["rho_sim", "theta_sim", "genome_size_sim", "sample_size_sim", "seed_sim", "max_rho", "max_lk"]
 
@@ -64,10 +64,10 @@ if __name__ == '__main__':
     collected_results_sweep_1_df = collected_results_sweep_1_df.astype('float64')
     
     # Plot results
-    ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_rho_sim", y="max_rho", hue="sample_size_sim", palette="Oranges")
+    ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_rho_sim", y="max_rho", hue="sample_size_sim", palette="Purples")
     ax.legend(title='Genomes')
     
-    ax.set_title("MSP LDhat Simulated (scaled_rho_sim) vs Estimated Rho (max_rho)")
+    ax.set_title("LDhat Simulated")
 
     ax.set(ylabel="Estimated \u03C1", xlabel="Simulated \u03C1")
 
