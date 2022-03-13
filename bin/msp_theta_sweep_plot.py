@@ -35,9 +35,9 @@ def collect_results_sweep_1(rho, theta, genome_size, sample_size, seed):
 if __name__ == '__main__':
     # Sweep 1: Recombination rate estimation
     rho_sweep_1 = [0.0] # unscaled r values. rho = 2 . p . N_e . r . tractlen
-    theta_sweep_1 = [0.05, 0.15, 0.25, 0.35]  # unscaled u values. theta = 2 . p . N_e . u
-    genome_size_sweep_1 = [100000]
-    sample_size_sweep_1 = [5,10,20,30,40,50,60,70,80,90,100]
+    theta_sweep_1 = [0.0005, 0.0025, 0.005]  # unscaled u values. theta = 2 . p . N_e . u
+    genome_size_sweep_1 = [25000]
+    sample_size_sweep_1 = [50,100,150,200]
     seed_sweep_1 = [1,2,3,4,5,6,7,8,9,10]
 
     recom_tract_len = 1000
@@ -67,8 +67,8 @@ if __name__ == '__main__':
     ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_theta_sim", y="theta_est", hue="sample_size_sim", palette="Blues")
     ax.legend(title='Genomes')
     
-    ax.set_title("MSP LDhat Simulated (scaled_theta_sim) vs Estimated (theta_est)")
+    ax.set_title("LDhat")
 
-    # ax.set(ylabel="Estimated \u03C1", xlabel="Simulated \u03C1")
+    ax.set(ylabel="Estimated \u03B8", xlabel="Simulated \u03B8")
 
     ax.figure.savefig("collected_results_msp_theta_sweep.png", dpi=500)
