@@ -64,8 +64,8 @@ if __name__ == '__main__':
     collected_results_sweep_1_df = collected_results_sweep_1_df.astype('float64')
     
     # Plot results
-    ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_theta_sim", y="theta_est", hue="sample_size_sim", palette="Blues")
-    ax.legend(title='Genomes')
+    ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_theta_sim", y="theta_est", hue="sample_size_sim", palette="Greens")
+    ax.legend(title='genomes')
     
     ax.set_title("LDhat")
 
