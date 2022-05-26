@@ -6,6 +6,7 @@
 - [Getting Started](#getting-started)
   - [Set up using conda](#set-up-using-conda)
   - [Set up using docker](#set-up-using-docker)
+- [Quick Start](#quick-start)
 
 ## About
 Nextflow pipeline for LDhat, specifically for the LDhat pairwise module, configured to work with gene-conversion type recombination.
@@ -25,7 +26,7 @@ It is also possible to install and run the program on Windows via [wsl](https://
 Instructions for installing nextflow and dependencies via conda
 1. Clone the repo
    ```sh
-   git clone https://github.com/sid-krish/rhometa_sim.git
+   git clone https://github.com/sid-krish/Nextflow_LDhat.git
    ```
 2. Install the conda package manager: [Miniconda download](https://conda.io/en/latest/miniconda.html)
 3. Install nextflow
@@ -45,14 +46,17 @@ Instructions for installing nextflow and dependencies via conda
 Instructions for installing nextflow and using the provided docker image for dependencies
 1. Clone the repo
    ```sh
-    git clone https://github.com/sid-krish/rhometa_sim.git
+    git clone https://github.com/sid-krish/Nextflow_LDhat.git
    ```
 2. Install nextflow [Nextflow install](https://www.nextflow.io/index.html#GetStarted)
 3. Install docker desktop [Docker install](https://docs.docker.com/desktop/linux/).
 4. Adjust settings in nextflow.config file, by default it is configured to work with docker with modest resources.
-5. In the sim_gen.nf file comment the lines related to conda, for instance:
+5. In the nextflow.config file comment the following line:
    ```
-   // conda 'conda-forge::msprime=1.1.1 conda-forge::gsl'
+   // conda='environment.yaml'
    ```
 6. Ensure docker is running.
 7. The pipeline is now ready to run, all the required dependencies are present in the docker image, that the pipeline is preconfigured to use.
+
+<!-- QUICK START -->
+## Quick Start
