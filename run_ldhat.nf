@@ -254,8 +254,8 @@ workflow {
     params.prefix_filename = 'none'
     params.input_fasta = 'none'
     // params.lookup_tables = "Lookup_tables"
-    // params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
-    params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-100"
+    params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
+    // params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-100"
 
     // Input verification
     if (params.input_fasta == 'none') {
