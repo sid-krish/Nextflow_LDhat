@@ -193,13 +193,13 @@ process LDHAT_PAIRWISE{
             path("pairwise_freqs.txt"),
             path("pairwise_outfile.txt"),
             path("pairwise_stdOut.txt"),
-            path("watterson_est.txt")
+            path("theta_est.csv")
 
     script:
         // uses pexpect to handle unavoidable prompts
         """
         run_pairwise_with_pexpect.py ${params.recom_tract_len} sites.txt locs_C.txt lookupTable.txt > pairwise_stdOut.txt
-        echo ${theta_est} > watterson_est.txt
+        echo ${theta_est} > theta_est.csv
         """
 
 }
@@ -213,7 +213,7 @@ process PAIRWISE_PROCESS_OUTPUT{
             path("pairwise_freqs.txt"),
             path("pairwise_outfile.txt"),
             path("pairwise_stdOut.txt"),
-            path("watterson_est.txt")
+            path("theta_est.csv")
 
     output:
         path "processed_results.csv", emit: processed_results_csv
@@ -247,15 +247,13 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    params.mutation_rate = 0.01 // scaled theta
-    params.recom_tract_len = 500
+    // params.mutation_rate = 0.01 // scaled theta
+    params.recom_tract_len = 1000
     params.ldpop_rho_range = "101,100"
 
     params.prefix_filename = 'none'
     params.input_fasta = 'none'
     // params.lookup_tables = "Lookup_tables"
-    params.lookup_tables = "/Volumes/Backup/Lookup_tables/Lookup_tables_m_0.01_r_0-100"
-    // params.lookup_tables = "/shared/homes/11849395/Lookup_tables/Lookup_tables_0-100"
 
     // Input verification
     if (params.input_fasta == 'none') {
@@ -265,7 +263,7 @@ workflow {
 
     // Channels
     input_fasta_channel = Channel.fromPath( params.input_fasta )
-    downsampled_lookup_tables = Channel.fromPath( "${params.lookup_tables}/lk_downsampled_*.csv" ).collect()
+    // downsampled_lookup_tables = Channel.fromPath( "${params.lookup_tables}/lk_downsampled_*.csv" ).collect()
 
     // For each process there is a output of tuple with the params that change + necessary files/values  to move forward until they are no longer need
     PREFIX_FILENAME(input_fasta_channel, params.prefix_filename)
@@ -278,11 +276,11 @@ workflow {
 
     WATTERSON_ESTIMATE(SWITCH_TO_GENE_CONVERSION_MODE.out)
 
-    // LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
+    LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
 
-    DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, params.mutation_rate, downsampled_lookup_tables)
+    // DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, params.mutation_rate, downsampled_lookup_tables)
 
-    LDHAT_PAIRWISE(DOWNSAMPLED_LOOKUP_TABLE.out)
+    LDHAT_PAIRWISE(LOOKUP_TABLE_LDPOP.out)
 
     PAIRWISE_PROCESS_OUTPUT(LDHAT_PAIRWISE.out)
 

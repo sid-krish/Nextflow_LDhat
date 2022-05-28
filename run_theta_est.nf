@@ -24,7 +24,7 @@ process PREFIX_FILENAME {
 
 
 process LDHAT_REFORMAT_FASTA{
-    // publishDir "LDhat_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
+    // publishDir "LDhat_Theta_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
 
     input:
         tuple val(prefix_filename),
@@ -43,7 +43,7 @@ process LDHAT_REFORMAT_FASTA{
 
 
 process LDHAT_CONVERT{
-//     publishDir "LDhat_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
+//     publishDir "LDhat_Theta_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
 
     input:
         tuple val(prefix_filename),
@@ -71,7 +71,7 @@ process LDHAT_CONVERT{
 
 
 process SWITCH_TO_GENE_CONVERSION_MODE {
-    // publishDir "LDhat_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
+    // publishDir "LDhat_Theta_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
 
     input:
         tuple val(prefix_filename),
@@ -94,8 +94,9 @@ process SWITCH_TO_GENE_CONVERSION_MODE {
 
 }
 
+
 process WATTERSON_ESTIMATE {
-    publishDir "LDhat_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
+    publishDir "LDhat_Theta_Output", mode: "copy", saveAs: {filename -> "${prefix_filename}${filename}"}
 
     input:
         tuple val(prefix_filename),
@@ -117,7 +118,6 @@ process WATTERSON_ESTIMATE {
     original_watterson.py \$genome_len \$snps ${sample_size} > theta_est.csv
     """
 }
-
 
 
 workflow {

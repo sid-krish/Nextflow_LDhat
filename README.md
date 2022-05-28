@@ -7,9 +7,12 @@
   - [Set up using conda](#set-up-using-conda)
   - [Set up using docker](#set-up-using-docker)
 - [Quick Start and Output](#quick-start-and-output)
+  - [run_ldhat.nf](#run_ldhatnf)
+  - [run_theta_est.nf](#run_theta_estnf)
+- [Pipeline Options and Advanced Usage](#pipeline-options-and-advanced-usage)
 
 ## About
-Nextflow pipeline for LDhat, specifically for the LDhat pairwise module, configured to work with gene-conversion type recombination.
+Nextflow pipeline for LDhat, specifically for the LDhat pairwise module, configured to work with gene-conversion type recombination. Based on the journal article https://academic.oup.com/genetics/article/160/3/1231/6052507 and the ldhat package https://github.com/auton1/LDhat. Additionaly, a theta estimate pipeline has been implemented based on equation 1 from the journal article.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -60,4 +63,48 @@ Instructions for installing nextflow and using the provided docker image for dep
 
 <!-- QUICK START AND OUTPUT -->
 ## Quick Start and Output
-The following quick start example makes use of the files in [toy_dataset.zip](https://github.com/sid-krish/rhometa/blob/main/toy_dataset.zip).
+The following quick start example makes use of the files in [toy_dataset.zip](https://github.com/sid-krish/Nextflow_LDhat/blob/main/toy_dataset.zip).
+
+This example is designed to help ensure that run_ldhat.nf (rho estimation pipeline) and run_theta_est.nf (theta estimation pipeline) are configured properly and to demonstrate a typical workflow.
+The toy datasets were simulated using the simulation pipeline [Nextflow_LDhat_Sim](https://github.com/sid-krish/Nextflow_LDhat_Sim).
+
+### run_ldhat.nf
+run_ldhat.nf will by default estimate the theta per site and use it for generating the appropriate lookup table for the number of sequences in the fasta file. The lookup table is then used for the rho estimate.
+
+The default settings of the run_ldhat.nf pipeline have been configured to work with the quick start example as is.
+
+For this example the command to run is:
+```sh
+nextflow run run_ldhat.nf --input_fasta toy_dataset/example.fa
+```
+
+The output files will be saved to 'LDhat_Output'. The file ending with pairwise_outfile.txt and processed_results.csv have the rho estimates and file ending with theta_est.csv will have the theta (per site) estimate.
+
+The result in the file ending with processed_results.csv should be:
+```
+max_rho,max_lk
+9.000,-41836138.059
+```
+
+The result in the file ending with theta_est.csv should be:
+```
+0.010264296769556949
+```
+
+### run_theta_est.nf
+run_theta_est.nf is used to get the theta (per site) estimate only.
+
+For this example the command to run is:
+```sh
+nextflow run run_theta_est.nf --input_fasta toy_dataset/example.fa 
+```
+
+The output files will be saved to 'LDhat_Theta_Output'. The file ending with theta_est.csv will have the theta (per site) estimate. It should have the following results:
+```
+0.010264296769556949
+```
+
+<!-- PIPELINE OPTIONS AND ADVANCED USAGE -->
+## Pipeline Options and Advanced Usage
+
+
