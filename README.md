@@ -6,7 +6,7 @@
 - [Getting Started](#getting-started)
   - [Set up using conda](#set-up-using-conda)
   - [Set up using docker](#set-up-using-docker)
-- [Quick Start](#quick-start)
+- [Quick Start and Output](#quick-start-and-output)
 
 ## About
 Nextflow pipeline for LDhat, specifically for the LDhat pairwise module, configured to work with gene-conversion type recombination.
@@ -58,5 +58,6 @@ Instructions for installing nextflow and using the provided docker image for dep
 6. Ensure docker is running.
 7. The pipeline is now ready to run, all the required dependencies are present in the docker image, that the pipeline is preconfigured to use.
 
-<!-- QUICK START -->
-## Quick Start
+<!-- QUICK START AND OUTPUT -->
+## Quick Start and Output
+The following quick start example makes use of the files in [toy_dataset.zip](https://github.com/sid-krish/rhometa/blob/main/toy_dataset.zip).
