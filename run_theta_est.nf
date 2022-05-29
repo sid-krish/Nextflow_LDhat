@@ -124,7 +124,7 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    params.prefix_filename = 'none'
+    params.prefix_filename = 'none' // prefix string to output filenames to help distinguish runs
     params.input_fasta = 'none'
 
 

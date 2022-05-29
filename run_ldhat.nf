@@ -143,7 +143,7 @@ process LOOKUP_TABLE_LDPOP {
     // There are other parameters that can be adjusted, I've left them out for the time being
     // also they mention twice muation and recom rate, for the mutation and recom parameters which I am unsure how to interpret
     """
-    ldtable.py --cores $task.cpus -n ${sample_size} -th ${theta_est} -rh ${params.ldpop_rho_range} --approx > lookupTable.txt
+    ldtable.py --cores $task.cpus -n ${sample_size} -th ${theta_est} -rh ${params.lookup_grid} --approx > lookupTable.txt
     """
 }
 
@@ -172,7 +172,7 @@ process DOWNSAMPLED_LOOKUP_TABLE {
 
     script:
     """
-    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.ldpop_rho_range}
+    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.lookup_grid}
     """
 }
 
@@ -249,11 +249,11 @@ workflow {
 
     // params.mutation_rate = 0.01 // scaled theta
     params.recom_tract_len = 1000
-    params.ldpop_rho_range = "101,100"
+    params.lookup_grid = "101,100" // The range of rho values used to generate lookup tables
 
-    params.prefix_filename = 'none'
+    params.prefix_filename = 'none' // prefix string to output filenames to help distinguish runs
     params.input_fasta = 'none'
-    // params.lookup_tables = "Lookup_tables"
+    // params.lookup_tables = "Lookup_tables" // Location of downsampled lookup tables
 
     // Input verification
     if (params.input_fasta == 'none') {
