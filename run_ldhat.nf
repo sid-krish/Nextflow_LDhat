@@ -158,7 +158,7 @@ process DOWNSAMPLED_LOOKUP_TABLE {
             path("sites.txt"),
             path("locs_C.txt")
         
-        val mutation_rate
+        val theta
         path downsampled_lookup_tables
         
 
@@ -172,7 +172,7 @@ process DOWNSAMPLED_LOOKUP_TABLE {
 
     script:
     """
-    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${mutation_rate} ${params.lookup_grid}
+    reformat_downsampled_lk_table.py lk_downsampled_${sample_size}.csv ${sample_size} ${theta} ${params.lookup_grid}
     """
 }
 
@@ -247,7 +247,7 @@ workflow {
     // Note: Channels can be called unlimited number of times in DSL2
     // A process component can be invoked only once in the same workflow context
 
-    // params.mutation_rate = 0.01 // scaled theta
+    // params.theta = 0.01 // scaled theta
     params.recom_tract_len = 1000
     params.lookup_grid = "101,100" // The range of rho values used to generate lookup tables
 
@@ -278,7 +278,7 @@ workflow {
 
     LOOKUP_TABLE_LDPOP(WATTERSON_ESTIMATE.out)
 
-    // DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, params.mutation_rate, downsampled_lookup_tables)
+    // DOWNSAMPLED_LOOKUP_TABLE(WATTERSON_ESTIMATE.out, params.theta, downsampled_lookup_tables)
 
     LDHAT_PAIRWISE(LOOKUP_TABLE_LDPOP.out)
 
