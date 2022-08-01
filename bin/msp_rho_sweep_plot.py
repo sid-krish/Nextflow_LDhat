@@ -64,6 +64,7 @@ if __name__ == '__main__':
     collected_results_sweep_1_df = collected_results_sweep_1_df.astype('float64')
     
     # Plot results
+    sns.set_theme(style="whitegrid")
     ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_rho_sim", y="max_rho", hue="sample_size_sim", palette="Purples")
     ax.legend(title='Genomes')
     

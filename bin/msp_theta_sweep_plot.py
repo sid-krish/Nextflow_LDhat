@@ -64,6 +64,8 @@ if __name__ == '__main__':
     collected_results_sweep_1_df = collected_results_sweep_1_df.astype('float64')
     
     # Plot results
+    sns.set_theme(style="whitegrid")
+
     ax = sns.boxplot(data=collected_results_sweep_1_df,x="scaled_theta_sim", y="theta_est", hue="sample_size_sim", palette="Greens")
     ax.legend(title='genomes')
     
@@ -71,4 +73,4 @@ if __name__ == '__main__':
 
     ax.set(ylabel="Estimated \u03B8", xlabel="Simulated \u03B8")
 
-    ax.figure.savefig("collected_results_msp_theta_sweep.png", dpi=500)
+    ax.figure.savefig("collected_results_msp_theta_sweep.png",bbox_inches='tight', dpi=500)
